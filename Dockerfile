@@ -2,9 +2,7 @@ ARG BASE_IMAGE=debian:stable-slim
 
 FROM ${BASE_IMAGE}
 
-LABEL maintainer "Viktor Adam <rycus86@gmail.com>"
-
-ARG VERSION=5.4.3
+ARG VERSION=6.1.6
 ARG ARCH=amd64
 
 RUN apt-get update \

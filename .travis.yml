@@ -21,13 +21,13 @@ jobs:
             .
       after_success:
         - |
-          echo ${DOCKER_PASSWORD} | docker login --username "rycus86" --password-stdin
-          if [ "$TRAVIS_BRANCH" == "master" ]; then
-              docker tag grafana:${DOCKER_TAG} rycus86/grafana:${DOCKER_TAG}${MODIFIER}
-              docker push rycus86/grafana:${DOCKER_TAG}${MODIFIER}
-          elif [ "$TRAVIS_BRANCH" == "${GRAFANA_VERSION}${MODIFIER}" ]; then
-              docker tag grafana:${DOCKER_TAG} rycus86/grafana:${GRAFANA_VERSION}${MODIFIER}-${DOCKER_TAG}
-              docker push rycus86/grafana:${GRAFANA_VERSION}${MODIFIER}-${DOCKER_TAG}
+          echo ${DOCKER_PASSWORD} | docker login --username "povilasv" --password-stdin
+          if [ "$TRAVIS_TAG" == "master" ]; then
+              docker tag grafana:${DOCKER_TAG} povilasv/grafana:${DOCKER_TAG}${MODIFIER}
+              docker push povilasv/grafana:${DOCKER_TAG}${MODIFIER}
+          elif [ "$TRAVIS_TAG" == "${GRAFANA_VERSION}${MODIFIER}" ]; then
+              docker tag grafana:${DOCKER_TAG} povilasv/grafana:${GRAFANA_VERSION}${MODIFIER}-${DOCKER_TAG}
+              docker push povilasv/grafana:${GRAFANA_VERSION}${MODIFIER}-${DOCKER_TAG}
           fi
       env:
         - DOCKERFILE=Dockerfile
@@ -38,30 +38,30 @@ jobs:
     - <<: *deploy-stage
       env:
         - DOCKERFILE=Dockerfile.armhf
-          # - DOCKER_FROM=rycus86/armhf-debian-qemu # unused
+          # - DOCKER_FROM=povilasv/armhf-debian-qemu # unused
         - DOCKER_TAG=armhf
         - GRAFANA_ARCH=armhf
 
     - <<: *deploy-stage
       env:
         - DOCKERFILE=Dockerfile
-        - DOCKER_FROM=rycus86/arm64v8-debian-qemu
+        - DOCKER_FROM=povilasv/arm64v8-debian-qemu
         - DOCKER_TAG=aarch64
         - GRAFANA_ARCH=arm64
 
     - stage: manifest
       script:
         - |
-          if [ "$TRAVIS_BRANCH" == "${GRAFANA_VERSION}${MODIFIER}" ]; then
-              sed -i "s#rycus86/grafana:#rycus86/grafana:${GRAFANA_VERSION}${MODIFIER}-#" manifest.yml
-              sed -i "s#rycus86/grafana:${GRAFANA_VERSION}${MODIFIER}-latest#rycus86/grafana:${GRAFANA_VERSION}${MODIFIER}#" manifest.yml
+          if [ "$TRAVIS_TAG" == "${GRAFANA_VERSION}${MODIFIER}" ]; then
+              sed -i "s#povilasv/grafana:#povilasv/grafana:${GRAFANA_VERSION}${MODIFIER}-#" manifest.yml
+              sed -i "s#povilasv/grafana:${GRAFANA_VERSION}${MODIFIER}-latest#povilasv/grafana:${GRAFANA_VERSION}${MODIFIER}#" manifest.yml
           fi
-        - echo ${DOCKER_PASSWORD} | docker login --username "rycus86" --password-stdin
-        - curl -fsSL https://github.com/estesp/manifest-tool/releases/download/v0.7.0/manifest-tool-linux-amd64 > ./manifest-tool
+        - echo ${DOCKER_PASSWORD} | docker login --username "povilasv" --password-stdin
+        - curl -fsSL https://github.com/estesp/manifest-tool/releases/download/v1.0.0-rc3/manifest-tool-linux-amd64 > ./manifest-tool
         - chmod +x ./manifest-tool
         - ./manifest-tool push from-spec manifest.yml
 
 env:
   global:
-  - GRAFANA_VERSION=5.4.3
+  - GRAFANA_VERSION=6.1.6
   - MODIFIER=
