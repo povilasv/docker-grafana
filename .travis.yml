@@ -45,7 +45,7 @@ jobs:
     - <<: *deploy-stage
       env:
         - DOCKERFILE=Dockerfile
-        - DOCKER_FROM=povilasv/arm64v8-debian-qemu
+        - DOCKER_FROM=rycus86/arm64v8-debian-qemu
         - DOCKER_TAG=aarch64
         - GRAFANA_ARCH=arm64
 
@@ -64,4 +64,3 @@ jobs:
 env:
   global:
   - GRAFANA_VERSION=6.1.6
-  - MODIFIER=
